@@ -40,7 +40,7 @@ class HomePage extends StatelessWidget {
                       "Janeiro",
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        fontSize: 17,
+                        fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
