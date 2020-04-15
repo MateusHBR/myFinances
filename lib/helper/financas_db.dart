@@ -72,4 +72,25 @@ class FinancasHelper {
       date.toJson(),
     );
   }
+
+  deleteDate(int id) async {
+    var bancoDados = await db;
+
+    return await bancoDados.delete(
+      tableName,
+      where: "id = ?",
+      whereArgs: [id],
+    );
+  }
+
+  updateDate(Date date) async {
+    var bancoDados = await db;
+
+    return await bancoDados.update(
+      tableName,
+      date.toJson(),
+      where: "id = ?",
+      whereArgs: [date.id],
+    );
+  }
 }
