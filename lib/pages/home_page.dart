@@ -99,8 +99,14 @@ class _HomePageState extends State<HomePage> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => MesFinancasPage(
-                      title: _date[index].month,
-                      salary: _date[index].salary,
+                      date: Date(
+                        id: _date[index].id,
+                        month: _date[index].month,
+                        year: _date[index].year,
+                        salary: _date[index].salary,
+                      ),
+                      // title: _date[index].month,
+                      // salary: _date[index].salary,
                     ),
                   ),
                 );
