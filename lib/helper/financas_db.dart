@@ -1,4 +1,5 @@
 import 'package:despesas_app/models/date.dart';
+import 'package:despesas_app/models/gasto.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -44,10 +45,10 @@ class FinancasHelper {
     await db.execute(sql);
     String sql2 = "CREATE TABLE $secondTableName ("
         "id INTEGER PRIMARY KEY AUTOINCREMENT,"
-        "nome VARCHAR,"
-        "valor FLOAT,"
-        "id_mes INTEGER,"
-        "FOREIGN KEY (id) REFERENCES $tableName(id)"
+        "title VARCHAR,"
+        "value FLOAT,"
+        "idDate INTEGER,"
+        "FOREIGN KEY (idDate) REFERENCES $tableName(id)"
         ")";
     // tabela que irei criar
     await db.execute(sql2);
@@ -91,6 +92,15 @@ class FinancasHelper {
       date.toJson(),
       where: "id = ?",
       whereArgs: [date.id],
+    );
+  }
+
+  insertGasto(Gasto gasto) async {
+    var bancoDados = await db;
+
+    return await bancoDados.insert(
+      secondTableName,
+      gasto.toJson(),
     );
   }
 }
