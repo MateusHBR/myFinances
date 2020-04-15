@@ -1,14 +1,16 @@
 import 'package:despesas_app/components/text_field_home.dart';
+import 'package:despesas_app/models/date.dart';
 import 'package:flutter/material.dart';
 
 class ModalDateHome extends StatefulWidget {
-  final Function function;
+  final Date date;
+  final Function functionInsert;
+  final bool refresh;
 
   ModalDateHome({
-    // this.monthController,
-    // this.yearController,
-    // this.salaryController,
-    this.function,
+    this.date,
+    this.refresh = false,
+    this.functionInsert,
   });
 
   @override
@@ -17,9 +19,7 @@ class ModalDateHome extends StatefulWidget {
 
 class _ModalDateHomeState extends State<ModalDateHome> {
   var monthController = TextEditingController();
-
   var yearController = TextEditingController();
-
   var salaryController = TextEditingController();
 
   @override
@@ -44,7 +44,7 @@ class _ModalDateHomeState extends State<ModalDateHome> {
         child: Column(
           children: <Widget>[
             Text(
-              "Adicionar data",
+              widget.refresh ? "Atualizar data" : "Adicionar data",
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -106,20 +106,30 @@ class _ModalDateHomeState extends State<ModalDateHome> {
               child: RaisedButton(
                 color: Theme.of(context).primaryColor,
                 onPressed: () {
-                  String month = monthController.text;
-                  String year = yearController.text;
-                  String salary = salaryController.text;
-                  print("$month, $year, $salary");
-                  widget.function(
-                    monthController.text,
-                    yearController.text,
-                    salaryController.text,
-                  );
+                  if (widget.refresh) {
+                    widget.functionInsert(
+                      Date(
+                        id: widget.date.id,
+                        month: monthController.text,
+                        year: yearController.text,
+                        salary: salaryController.text,
+                      ),
+                    );
+                  } else {
+                    widget.functionInsert(
+                      Date(
+                        month: monthController.text,
+                        year: yearController.text,
+                        salary: salaryController.text,
+                      ),
+                    );
+                  }
+                  Navigator.of(context).pop();
                 },
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(50)),
                 child: Text(
-                  "Adicionar",
+                  widget.refresh ? "Atualizar" : "Adicionar",
                   style: TextStyle(
                     color: Colors.white,
                   ),
