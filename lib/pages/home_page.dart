@@ -33,17 +33,10 @@ class _HomePageState extends State<HomePage> {
     print(_date);
   }
 
-  void saveDate(String month, String year, String salary) async {
-    if (month.isEmpty || year.isEmpty || salary == null) {
+  void saveDate(Date date) async {
+    if (date.month.isEmpty || date.year.isEmpty || date.salary == null) {
       return;
     }
-
-    Date date = Date(
-      month: month,
-      year: year,
-      salary: salary,
-    );
-
     await _db.insertDate(date);
     _listDate();
   }
@@ -53,7 +46,30 @@ class _HomePageState extends State<HomePage> {
       context: context,
       builder: (_) {
         return ModalDateHome(
-          function: saveDate,
+          functionInsert: saveDate,
+        );
+      },
+    );
+  }
+
+  _deleteDate(int id) async {
+    await _db.deleteDate(id);
+    _listDate();
+  }
+
+  _updateDate(Date date) async {
+    await _db.updateDate(date);
+    _listDate();
+  }
+
+  _updateScreen(Date date) {
+    showModalBottomSheet(
+      context: context,
+      builder: (_) {
+        return ModalDateHome(
+          refresh: true,
+          functionInsert: _updateDate,
+          date: date,
         );
       },
     );
@@ -90,8 +106,14 @@ class _HomePageState extends State<HomePage> {
                 );
               },
               child: ItemMesHome(
-                title: _date[index].month,
-                year: _date[index].year,
+                date: Date(
+                  id: _date[index].id,
+                  month: _date[index].month,
+                  year: _date[index].year,
+                  salary: _date[index].salary,
+                ),
+                functionDelete: _deleteDate,
+                functionUpdate: _updateScreen,
               ),
             );
           },
