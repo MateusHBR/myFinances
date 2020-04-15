@@ -1,13 +1,15 @@
 import 'package:despesas_app/components/icon_aux_home.dart';
+import 'package:despesas_app/models/date.dart';
 import 'package:flutter/material.dart';
 
 class ItemMesHome extends StatelessWidget {
-  final String title;
-  final String year;
-
+  final Function(int) functionDelete;
+  final Function functionUpdate;
+  final Date date;
   ItemMesHome({
-    @required this.title,
-    @required this.year,
+    @required this.date,
+    @required this.functionDelete,
+    @required this.functionUpdate,
   });
 
   @override
@@ -27,7 +29,7 @@ class ItemMesHome extends StatelessWidget {
                 Container(
                   // width: size.width * 0.3,
                   child: Text(
-                    "$year/",
+                    "${date.year}/",
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontSize: 16,
@@ -38,7 +40,7 @@ class ItemMesHome extends StatelessWidget {
                 Container(
                   width: size.width * 0.4485,
                   child: Text(
-                    title,
+                    date.month,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontSize: 16,
@@ -52,12 +54,16 @@ class ItemMesHome extends StatelessWidget {
                       IconAuxHome(
                         icon: Icons.edit,
                         color: Colors.green,
-                        function: () {},
+                        function: () {
+                          functionUpdate(date);
+                        },
                       ),
                       IconAuxHome(
                         icon: Icons.remove_circle,
                         color: Colors.red,
-                        function: () {},
+                        function: () {
+                          _onDelete(context, date.id);
+                        },
                       ),
                     ],
                   ),
@@ -67,6 +73,36 @@ class ItemMesHome extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  _onDelete(context, int id) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Excluir"),
+          content: Text(
+            "Você deseja excluir esse campo?",
+            textAlign: TextAlign.center,
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text("Cancelar"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            FlatButton(
+              onPressed: () {
+                functionDelete(id);
+                Navigator.of(context).pop();
+              },
+              child: Text("Ok"),
+            ),
+          ],
+        );
+      },
     );
   }
 }
