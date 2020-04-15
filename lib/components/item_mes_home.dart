@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 
 class ItemMesHome extends StatelessWidget {
   final String title;
+  final String year;
 
   ItemMesHome({
     @required this.title,
+    @required this.year,
   });
 
   @override
@@ -20,10 +22,21 @@ class ItemMesHome extends StatelessWidget {
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: size.height * 0.02),
             child: Row(
-              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
+                Icon(Icons.date_range),
                 Container(
-                  width: size.width * 0.57,
+                  // width: size.width * 0.3,
+                  child: Text(
+                    "$year/",
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                Container(
+                  width: size.width * 0.4485,
                   child: Text(
                     title,
                     overflow: TextOverflow.ellipsis,
