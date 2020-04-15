@@ -1,13 +1,21 @@
 import 'package:flutter/material.dart';
 
 class MesFinancasPage extends StatelessWidget {
+  final String title;
+  final String salary;
+
+  MesFinancasPage({
+    @required this.title,
+    @required this.salary,
+  });
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Janeiro",
+          title,
           overflow: TextOverflow.ellipsis,
         ),
       ),
@@ -35,7 +43,7 @@ class MesFinancasPage extends StatelessWidget {
                   vertical: size.height * 0.02,
                 ),
                 child: Text(
-                  "Meu Salário:  R\$500,00",
+                  "Meu Salário:  R\$${double.parse(salary).toStringAsFixed(2)}",
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
