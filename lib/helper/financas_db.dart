@@ -1,3 +1,4 @@
+import 'package:despesas_app/models/date.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -38,8 +39,9 @@ class FinancasHelper {
         "id INTEGER PRIMARY KEY AUTOINCREMENT,"
         "month VARCHAR,"
         "year VARCHAR,"
-        "sal FLOAT"
+        "salary VARCHAR"
         ")";
+    await db.execute(sql);
     String sql2 = "CREATE TABLE $secondTableName ("
         "id INTEGER PRIMARY KEY AUTOINCREMENT,"
         "nome VARCHAR,"
@@ -48,8 +50,8 @@ class FinancasHelper {
         "FOREIGN KEY (id) REFERENCES $tableName(id)"
         ")";
     // tabela que irei criar
-    await db.execute(sql);
     await db.execute(sql2);
+
     //executand comando SQL
   }
 
@@ -58,6 +60,16 @@ class FinancasHelper {
     String sql = "SELECT * FROM $tableName ORDER BY id DESC";
     List months = await bancoDados.rawQuery(sql);
 
+    print(months);
     return months;
+  }
+
+  insertDate(Date date) async {
+    var bancoDados = await db;
+
+    return await bancoDados.insert(
+      tableName,
+      date.toJson(),
+    );
   }
 }
