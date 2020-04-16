@@ -1,3 +1,4 @@
+import 'package:despesas_app/components/alert_delete.dart';
 import 'package:despesas_app/helper/financas_db.dart';
 import 'package:despesas_app/models/date.dart';
 import 'package:despesas_app/models/gasto.dart';
@@ -38,7 +39,8 @@ class _MesFinancasPageState extends State<MesFinancasPage> {
     print(_gasto);
   }
 
-  void saveGasto(Gasto gasto) async {
+  saveGasto(Gasto gasto) async {
+    Navigator.of(context).pop();
     if (gasto.title.isEmpty || gasto.value.isEmpty || gasto.idDate == null) {
       return;
     }
@@ -55,6 +57,29 @@ class _MesFinancasPageState extends State<MesFinancasPage> {
         return ModalDespesaFinancasPage(
           function: saveGasto,
           id: widget.date.id,
+        );
+      },
+    );
+  }
+
+  void deleteGasto(int id) async {
+    await _db.deleteGasto(id);
+    _listGasto(widget.date.id);
+  }
+
+  void deleteGastos(int id) async {
+    await _db.deleteGastos(id);
+    _listGasto(widget.date.id);
+  }
+
+  _onDelete(context, int id, {bool aux = false}) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDelete(
+          multiplos: aux,
+          functionDelete: aux ? deleteGastos : deleteGasto,
+          id: id,
         );
       },
     );
@@ -103,13 +128,31 @@ class _MesFinancasPageState extends State<MesFinancasPage> {
                   padding: EdgeInsets.symmetric(
                     vertical: size.height * 0.02,
                   ),
-                  child: Text(
-                    "Meu Salário:  R\$${double.parse(widget.date.salary).toStringAsFixed(2)}",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.green,
-                    ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: size.width * 0.192),
+                        child: Text(
+                          "Meu Salário:  R\$${double.parse(widget.date.salary).toStringAsFixed(2)}",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.green,
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                        icon: Icon(
+                          Icons.remove_circle,
+                          color: Colors.red,
+                        ),
+                        onPressed: () {
+                          _onDelete(context, widget.date.id, aux: true);
+                        },
+                      ),
+                    ],
                   ),
                 ),
                 Divider(),
@@ -156,7 +199,13 @@ class _MesFinancasPageState extends State<MesFinancasPage> {
                                     Icons.remove_circle,
                                     color: Colors.red,
                                   ),
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    _onDelete(
+                                      context,
+                                      _gasto[index].id,
+                                      aux: false,
+                                    );
+                                  },
                                 ),
                               ],
                             ),
