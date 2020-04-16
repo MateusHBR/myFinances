@@ -2,7 +2,7 @@ import 'package:despesas_app/components/text_field_home.dart';
 import 'package:flutter/material.dart';
 import 'package:despesas_app/models/gasto.dart';
 
-class ModalDespesaFinancasPage extends StatelessWidget {
+class ModalDespesaFinancasPage extends StatefulWidget {
   final Function function;
   final int id;
 
@@ -11,8 +11,15 @@ class ModalDespesaFinancasPage extends StatelessWidget {
     this.id,
   });
 
+  @override
+  _ModalDespesaFinancasPageState createState() =>
+      _ModalDespesaFinancasPageState();
+}
+
+class _ModalDespesaFinancasPageState extends State<ModalDespesaFinancasPage> {
   var titleController = TextEditingController();
   var valueController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -89,11 +96,11 @@ class ModalDespesaFinancasPage extends StatelessWidget {
                   ),
                 ),
                 onPressed: () {
-                  function(
+                  widget.function(
                     Gasto(
                       title: titleController.text,
                       value: valueController.text,
-                      idDate: id,
+                      idDate: widget.id,
                     ),
                   );
                 },
