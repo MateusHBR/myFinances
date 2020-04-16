@@ -94,6 +94,10 @@ class _MesFinancasPageState extends State<MesFinancasPage> {
     }
     myMoney -= value;
 
+    filter(String aux) {
+      return aux.replaceAll('.', ',');
+    }
+
     var size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
@@ -129,18 +133,14 @@ class _MesFinancasPageState extends State<MesFinancasPage> {
                     vertical: size.height * 0.02,
                   ),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: size.width * 0.192),
-                        child: Text(
-                          "Meu Salário:  R\$${double.parse(widget.date.salary).toStringAsFixed(2)}",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.green,
-                          ),
+                      Text(
+                        "  Meu Salário:  R\$${filter(widget.date.salary)}",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.green,
                         ),
                       ),
                       IconButton(
@@ -160,8 +160,8 @@ class _MesFinancasPageState extends State<MesFinancasPage> {
                   child: Container(
                     height: size.height * 0.45,
                     width: double.infinity,
-                    padding:
-                        EdgeInsetsDirectional.only(start: size.width * 0.04),
+                    // padding:
+                    //     EdgeInsetsDirectional.only(start: size.width * 0.04),
                     child: ListView.builder(
                       itemCount: _gasto.length,
                       itemBuilder: (context, index) {
@@ -187,7 +187,7 @@ class _MesFinancasPageState extends State<MesFinancasPage> {
                                       Container(
                                         width: size.width * 0.25,
                                         child: Text(
-                                          " R\$${double.parse(_gasto[index].value).toStringAsFixed(2)}",
+                                          " R\$${filter(_gasto[index].value)}",
                                           overflow: TextOverflow.clip,
                                         ),
                                       ),
@@ -225,7 +225,7 @@ class _MesFinancasPageState extends State<MesFinancasPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        "Total de despesas: R\$ - ${value.toStringAsFixed(2)}",
+                        "Total de despesas: R\$ -${filter(value.toStringAsFixed(2).toString())}",
                         style: TextStyle(
                           color: Colors.red,
                           fontWeight: FontWeight.bold,
@@ -233,14 +233,14 @@ class _MesFinancasPageState extends State<MesFinancasPage> {
                       ),
                       myMoney >= 0
                           ? Text(
-                              "Valor restante na carteira: R\$${myMoney.toStringAsFixed(2)}",
+                              "Valor restante na carteira: R\$${filter(myMoney.toStringAsFixed(2).toString())}",
                               style: TextStyle(
                                 color: Colors.green,
                                 fontWeight: FontWeight.bold,
                               ),
                             )
                           : Text(
-                              "Valor restante na carteira: R\$${myMoney.toStringAsFixed(2)}",
+                              "Valor restante na carteira: R\$${filter(myMoney.toStringAsFixed(2).toString())}",
                               style: TextStyle(
                                 color: Colors.red,
                                 fontWeight: FontWeight.bold,
