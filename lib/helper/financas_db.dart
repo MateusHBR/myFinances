@@ -77,6 +77,11 @@ class FinancasHelper {
   deleteDate(int id) async {
     var bancoDados = await db;
 
+    await bancoDados.delete(
+      secondTableName,
+      where: "idDate = ?",
+      whereArgs: [id],
+    );
     return await bancoDados.delete(
       tableName,
       where: "id = ?",
@@ -110,5 +115,23 @@ class FinancasHelper {
     List gastos = await bancoDados.rawQuery(sql);
     print(gastos);
     return gastos;
+  }
+
+  deleteGasto(int id) async {
+    var bancoDados = await db;
+    bancoDados.delete(
+      secondTableName,
+      where: "id = ?",
+      whereArgs: [id],
+    );
+  }
+
+  deleteGastos(int id) async {
+    var bancoDados = await db;
+    bancoDados.delete(
+      secondTableName,
+      where: "idDate = ?",
+      whereArgs: [id],
+    );
   }
 }
