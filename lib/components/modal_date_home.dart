@@ -39,7 +39,7 @@ class _ModalDateHomeState extends State<ModalDateHome> {
       child: SingleChildScrollView(
         padding: EdgeInsets.symmetric(
           horizontal: size.width * 0.01,
-          vertical: size.width * 0.02,
+          vertical: size.height * 0.02,
         ),
         child: Column(
           children: <Widget>[
