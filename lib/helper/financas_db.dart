@@ -46,7 +46,7 @@ class FinancasHelper {
     String sql2 = "CREATE TABLE $secondTableName ("
         "id INTEGER PRIMARY KEY AUTOINCREMENT,"
         "title VARCHAR,"
-        "value FLOAT,"
+        "value VARCHAR,"
         "idDate INTEGER,"
         "FOREIGN KEY (idDate) REFERENCES $tableName(id)"
         ")";
@@ -102,5 +102,13 @@ class FinancasHelper {
       secondTableName,
       gasto.toJson(),
     );
+  }
+
+  listGastos(int idDate) async {
+    var bancoDados = await db;
+    String sql = "SELECT * FROM $secondTableName WHERE idDate = $idDate";
+    List gastos = await bancoDados.rawQuery(sql);
+    print(gastos);
+    return gastos;
   }
 }
