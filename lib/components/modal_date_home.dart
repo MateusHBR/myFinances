@@ -2,6 +2,10 @@ import 'package:despesas_app/components/text_field_home.dart';
 import 'package:despesas_app/models/date.dart';
 import 'package:flutter/material.dart';
 
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:month_picker_dialog/month_picker_dialog.dart';
+import 'package:intl/intl.dart';
+
 class ModalDateHome extends StatefulWidget {
   final Date date;
   final Function functionInsert;
@@ -21,6 +25,21 @@ class _ModalDateHomeState extends State<ModalDateHome> {
   var monthController = TextEditingController();
   var yearController = TextEditingController();
   var salaryController = TextEditingController();
+  DateTime dataInfo;
+
+  monthFormat(dataInfo) {
+    initializeDateFormatting("pt_BR", null);
+    String dataFormatada = DateFormat('MMMM', 'pt_BR').format(dataInfo);
+
+    return dataFormatada;
+  }
+
+  yearFormat(dataInfo) {
+    initializeDateFormatting("pt_BR", null);
+    String dataFormatada = DateFormat('yyyy', 'pt_BR').format(dataInfo);
+
+    return dataFormatada;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,31 +72,34 @@ class _ModalDateHomeState extends State<ModalDateHome> {
             SizedBox(
               height: size.height * 0.025,
             ),
-            Container(
-              margin: EdgeInsets.symmetric(
-                vertical: size.height * 0.02,
-                horizontal: size.width * 0.04,
-              ),
-              child: TextFieldHome(
-                controller: monthController,
-                id: 1,
-                labelText: "Informe o mês",
-                hintText: "Exempo: Janeiro.",
-                icon: Icons.date_range,
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.symmetric(
-                vertical: size.height * 0.02,
-                horizontal: size.width * 0.04,
-              ),
-              child: TextFieldHome(
-                controller: yearController,
-                labelText: "Informe o ano",
-                hintText: "Exempo: 2020.",
-                id: 2,
-                keyboardType: TextInputType.number,
-                icon: Icons.date_range,
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: size.height * 0.02),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    dataInfo == null
+                        ? "Nenhuma data selecionada!"
+                        : "${monthFormat(dataInfo)} de ${yearFormat(dataInfo)}",
+                  ),
+                  FlatButton(
+                    child: Icon(Icons.calendar_today),
+                    onPressed: () {
+                      showMonthPicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(DateTime.now().year - 1),
+                        lastDate: DateTime(DateTime.now().year + 1),
+                      ).then((date) {
+                        if (date != null) {
+                          setState(() {
+                            dataInfo = date;
+                          });
+                        }
+                      });
+                    },
+                  ),
+                ],
               ),
             ),
             Container(
@@ -110,16 +132,16 @@ class _ModalDateHomeState extends State<ModalDateHome> {
                     widget.functionInsert(
                       Date(
                         id: widget.date.id,
-                        month: monthController.text,
-                        year: yearController.text,
+                        month: monthFormat(dataInfo),
+                        year: yearFormat(dataInfo),
                         salary: salaryController.text,
                       ),
                     );
                   } else {
                     widget.functionInsert(
                       Date(
-                        month: monthController.text,
-                        year: yearController.text,
+                        month: monthFormat(dataInfo),
+                        year: yearFormat(dataInfo),
                         salary: salaryController.text,
                       ),
                     );
