@@ -31,7 +31,7 @@ class _ModalDateHomeState extends State<ModalDateHome> {
     initializeDateFormatting("pt_BR", null);
     String dataFormatada = DateFormat('MMMM', 'pt_BR').format(dataInfo);
 
-    return dataFormatada;
+    return toBeginningOfSentenceCase(dataFormatada);
   }
 
   yearFormat(dataInfo) {
