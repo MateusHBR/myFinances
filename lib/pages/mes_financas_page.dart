@@ -20,10 +20,23 @@ class _MesFinancasPageState extends State<MesFinancasPage> {
   var _db = FinancasHelper();
 
   void initState() {
-    // _listDate();
+    _listGasto(widget.date.id);
   }
 
-  _listGasto() {}
+  void _listGasto(int id) async {
+    List gastosRecovered = await _db.listGastos(id);
+    List<Gasto> temporary = List<Gasto>();
+
+    for (var item in gastosRecovered) {
+      Gasto gt = Gasto.fromJson(item);
+      temporary.add(gt);
+    }
+    setState(() {
+      _gasto = temporary;
+    });
+    temporary = null;
+    print(_gasto);
+  }
 
   void saveGasto(Gasto gasto) async {
     if (gasto.title.isEmpty || gasto.value.isEmpty || gasto.idDate == null) {
@@ -31,12 +44,13 @@ class _MesFinancasPageState extends State<MesFinancasPage> {
     }
     await _db.insertGasto(gasto);
 
-    _listGasto();
+    _listGasto(widget.date.id);
   }
 
   _addGasto(context) {
     showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
       builder: (_) {
         return ModalDespesaFinancasPage(
           function: saveGasto,
@@ -48,6 +62,13 @@ class _MesFinancasPageState extends State<MesFinancasPage> {
 
   @override
   Widget build(BuildContext context) {
+    double myMoney = double.parse(widget.date.salary);
+    double value = 0.0;
+    for (int i = 0; i < _gasto.length; i++) {
+      value += double.parse(_gasto[i].value);
+    }
+    myMoney -= value;
+
     var size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
@@ -65,127 +86,122 @@ class _MesFinancasPageState extends State<MesFinancasPage> {
           _addGasto(context);
         },
       ),
-      body: Container(
-        width: size.width,
-        height: size.height * 0.8,
-        padding: EdgeInsets.symmetric(
-          vertical: size.height * 0.02,
-          horizontal: size.width * 0.01,
-        ),
-        child: Card(
-          color: Colors.yellow[100],
-          elevation: 5,
-          child: Column(
-            children: <Widget>[
-              Container(
-                padding: EdgeInsets.symmetric(
-                  vertical: size.height * 0.02,
-                ),
-                child: Text(
-                  "Meu Salário:  R\$${double.parse(widget.date.salary).toStringAsFixed(2)}",
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.green,
+      body: SingleChildScrollView(
+        child: Container(
+          width: size.width,
+          height: size.height * 0.8,
+          padding: EdgeInsets.symmetric(
+            vertical: size.height * 0.02,
+            horizontal: size.width * 0.01,
+          ),
+          child: Card(
+            color: Colors.yellow[100],
+            elevation: 5,
+            child: Column(
+              children: <Widget>[
+                Container(
+                  padding: EdgeInsets.symmetric(
+                    vertical: size.height * 0.02,
+                  ),
+                  child: Text(
+                    "Meu Salário:  R\$${double.parse(widget.date.salary).toStringAsFixed(2)}",
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.green,
+                    ),
                   ),
                 ),
-              ),
-              Divider(),
-              Container(
-                height: size.height * 0.45,
-                width: double.infinity,
-                padding: EdgeInsetsDirectional.only(start: size.width * 0.04),
-                child: SingleChildScrollView(
+                Divider(),
+                SingleChildScrollView(
+                  child: Container(
+                    height: size.height * 0.45,
+                    width: double.infinity,
+                    padding:
+                        EdgeInsetsDirectional.only(start: size.width * 0.04),
+                    child: ListView.builder(
+                      itemCount: _gasto.length,
+                      itemBuilder: (context, index) {
+                        return Column(
+                          children: <Widget>[
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Container(
+                                  width: size.width * 0.75,
+                                  child: Row(
+                                    children: <Widget>[
+                                      Container(
+                                        width: size.width * 0.5,
+                                        child: Text(
+                                          " • ${_gasto[index].title}",
+                                          overflow: TextOverflow.clip,
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                      ),
+                                      Container(
+                                        width: size.width * 0.25,
+                                        child: Text(
+                                          " R\$${double.parse(_gasto[index].value).toStringAsFixed(2)}",
+                                          overflow: TextOverflow.clip,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                IconButton(
+                                  icon: Icon(
+                                    Icons.remove_circle,
+                                    color: Colors.red,
+                                  ),
+                                  onPressed: () {},
+                                ),
+                              ],
+                            ),
+                            Divider(),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                Divider(),
+                Container(
+                  height: size.height * 0.15,
+                  padding: EdgeInsets.only(top: size.height * 0.01),
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text(
-                            " • Mercado: R\$ 10,00",
-                            style: TextStyle(
-                              fontSize: 16,
-                            ),
-                          ),
-                          IconButton(
-                            icon: Icon(
-                              Icons.remove_circle,
-                              color: Colors.red,
-                            ),
-                            onPressed: () {},
-                          ),
-                        ],
+                      Text(
+                        "Total de despesas: R\$ - ${value.toStringAsFixed(2)}",
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                      Divider(),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text(
-                            " • Loja: R\$ 10,00",
-                            style: TextStyle(
-                              fontSize: 16,
+                      myMoney >= 0
+                          ? Text(
+                              "Valor restante na carteira: R\$${myMoney.toStringAsFixed(2)}",
+                              style: TextStyle(
+                                color: Colors.green,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            )
+                          : Text(
+                              "Valor restante na carteira: R\$${myMoney.toStringAsFixed(2)}",
+                              style: TextStyle(
+                                color: Colors.red,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ),
-                          IconButton(
-                            icon: Icon(
-                              Icons.remove_circle,
-                              color: Colors.red,
-                            ),
-                            onPressed: () {},
-                          ),
-                        ],
-                      ),
-                      Divider(),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text(
-                            " • Mercado: R\$ 10,00",
-                            style: TextStyle(
-                              fontSize: 16,
-                            ),
-                          ),
-                          IconButton(
-                            icon: Icon(
-                              Icons.remove_circle,
-                              color: Colors.red,
-                            ),
-                            onPressed: () {},
-                          ),
-                        ],
-                      ),
-                      Divider(),
                     ],
                   ),
                 ),
-              ),
-              Divider(),
-              Container(
-                height: size.height * 0.15,
-                padding: EdgeInsets.only(top: size.height * 0.01),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      "Total de despesas: R\$ - 30,00",
-                      style: TextStyle(
-                        color: Colors.red,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      "Valor restante na carteira: R\$470,00",
-                      style: TextStyle(
-                        color: Colors.green,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
