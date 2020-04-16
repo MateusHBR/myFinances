@@ -1,13 +1,50 @@
+import 'package:despesas_app/helper/financas_db.dart';
+import 'package:despesas_app/models/date.dart';
+import 'package:despesas_app/models/gasto.dart';
 import 'package:flutter/material.dart';
+import '../components/modal_despesa_financas_page.dart';
 
-class MesFinancasPage extends StatelessWidget {
-  final String title;
-  final String salary;
+class MesFinancasPage extends StatefulWidget {
+  final Date date;
 
   MesFinancasPage({
-    @required this.title,
-    @required this.salary,
+    @required this.date,
   });
+
+  @override
+  _MesFinancasPageState createState() => _MesFinancasPageState();
+}
+
+class _MesFinancasPageState extends State<MesFinancasPage> {
+  List<Gasto> _gasto = List<Gasto>();
+  var _db = FinancasHelper();
+
+  void initState() {
+    // _listDate();
+  }
+
+  _listGasto() {}
+
+  void saveGasto(Gasto gasto) async {
+    if (gasto.title.isEmpty || gasto.value.isEmpty || gasto.idDate == null) {
+      return;
+    }
+    await _db.insertGasto(gasto);
+
+    _listGasto();
+  }
+
+  _addGasto(context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (_) {
+        return ModalDespesaFinancasPage(
+          function: saveGasto,
+          id: widget.date.id,
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +52,7 @@ class MesFinancasPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          title,
+          widget.date.month,
           overflow: TextOverflow.ellipsis,
         ),
       ),
@@ -24,7 +61,9 @@ class MesFinancasPage extends StatelessWidget {
         child: Icon(
           Icons.money_off,
         ),
-        onPressed: () {},
+        onPressed: () {
+          _addGasto(context);
+        },
       ),
       body: Container(
         width: size.width,
@@ -43,7 +82,7 @@ class MesFinancasPage extends StatelessWidget {
                   vertical: size.height * 0.02,
                 ),
                 child: Text(
-                  "Meu Salário:  R\$${double.parse(salary).toStringAsFixed(2)}",
+                  "Meu Salário:  R\$${double.parse(widget.date.salary).toStringAsFixed(2)}",
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -60,9 +99,63 @@ class MesFinancasPage extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text(" • Mercado: R\$ 10,00"),
-                      Text(" • Conveniencia: R\$ 10,00"),
-                      Text(" • Mercado: R\$ 10,00"),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text(
+                            " • Mercado: R\$ 10,00",
+                            style: TextStyle(
+                              fontSize: 16,
+                            ),
+                          ),
+                          IconButton(
+                            icon: Icon(
+                              Icons.remove_circle,
+                              color: Colors.red,
+                            ),
+                            onPressed: () {},
+                          ),
+                        ],
+                      ),
+                      Divider(),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text(
+                            " • Loja: R\$ 10,00",
+                            style: TextStyle(
+                              fontSize: 16,
+                            ),
+                          ),
+                          IconButton(
+                            icon: Icon(
+                              Icons.remove_circle,
+                              color: Colors.red,
+                            ),
+                            onPressed: () {},
+                          ),
+                        ],
+                      ),
+                      Divider(),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text(
+                            " • Mercado: R\$ 10,00",
+                            style: TextStyle(
+                              fontSize: 16,
+                            ),
+                          ),
+                          IconButton(
+                            icon: Icon(
+                              Icons.remove_circle,
+                              color: Colors.red,
+                            ),
+                            onPressed: () {},
+                          ),
+                        ],
+                      ),
+                      Divider(),
                     ],
                   ),
                 ),
