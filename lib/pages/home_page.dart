@@ -65,6 +65,7 @@ class _HomePageState extends State<HomePage> {
   _updateScreen(Date date) {
     showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
       builder: (_) {
         return ModalDateHome(
           refresh: true,
