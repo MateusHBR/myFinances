@@ -81,9 +81,21 @@ class _ModalDateHomeState extends State<ModalDateHome> {
                     dataInfo == null
                         ? "Nenhuma data selecionada!"
                         : "${monthFormat(dataInfo)} de ${yearFormat(dataInfo)}",
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: dataInfo == null
+                          ? Colors.black
+                          : Theme.of(context).primaryColor,
+                    ),
                   ),
-                  FlatButton(
-                    child: Icon(Icons.calendar_today),
+                  IconButton(
+                    icon: Icon(
+                      Icons.calendar_today,
+                      color: dataInfo == null
+                          ? Colors.black
+                          : Theme.of(context).primaryColor,
+                    ),
                     onPressed: () {
                       showMonthPicker(
                         context: context,
