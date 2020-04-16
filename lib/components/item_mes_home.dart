@@ -1,3 +1,4 @@
+import 'package:despesas_app/components/alert_delete.dart';
 import 'package:despesas_app/components/icon_aux_home.dart';
 import 'package:despesas_app/models/date.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,18 @@ class ItemMesHome extends StatelessWidget {
     @required this.functionDelete,
     @required this.functionUpdate,
   });
+
+  _onDelete(context, int id) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDelete(
+          functionDelete: functionDelete,
+          id: id,
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,36 +86,6 @@ class ItemMesHome extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-
-  _onDelete(context, int id) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text("Excluir"),
-          content: Text(
-            "Você deseja excluir esse campo?",
-            textAlign: TextAlign.center,
-          ),
-          actions: <Widget>[
-            FlatButton(
-              child: Text("Cancelar"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            FlatButton(
-              onPressed: () {
-                functionDelete(id);
-                Navigator.of(context).pop();
-              },
-              child: Text("Ok"),
-            ),
-          ],
-        );
-      },
     );
   }
 }
