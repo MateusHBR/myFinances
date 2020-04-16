@@ -1,6 +1,7 @@
 import 'package:despesas_app/components/text_field_home.dart';
 import 'package:flutter/material.dart';
 import 'package:despesas_app/models/gasto.dart';
+import 'package:flutter_masked_text/flutter_masked_text.dart';
 
 class ModalDespesaFinancasPage extends StatefulWidget {
   final Function function;
@@ -18,7 +19,14 @@ class ModalDespesaFinancasPage extends StatefulWidget {
 
 class _ModalDespesaFinancasPageState extends State<ModalDespesaFinancasPage> {
   var titleController = TextEditingController();
-  var valueController = TextEditingController();
+  var valueController = MoneyMaskedTextController(
+    decimalSeparator: ',',
+    thousandSeparator: '.',
+  );
+
+  filter(String s) {
+    return s.replaceAll('.', '').replaceAll(',', '.');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -96,13 +104,16 @@ class _ModalDespesaFinancasPageState extends State<ModalDespesaFinancasPage> {
                   ),
                 ),
                 onPressed: () {
-                  widget.function(
-                    Gasto(
-                      title: titleController.text,
-                      value: valueController.text,
-                      idDate: widget.id,
-                    ),
-                  );
+                  if (titleController.text.isNotEmpty &&
+                      valueController.text.isNotEmpty) {
+                    widget.function(
+                      Gasto(
+                        title: titleController.text,
+                        value: filter(valueController.text),
+                        idDate: widget.id,
+                      ),
+                    );
+                  }
                 },
               ),
             ),

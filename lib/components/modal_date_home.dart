@@ -2,6 +2,8 @@ import 'package:despesas_app/components/text_field_home.dart';
 import 'package:despesas_app/models/date.dart';
 import 'package:flutter/material.dart';
 
+import 'package:flutter_masked_text/flutter_masked_text.dart';
+
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:month_picker_dialog/month_picker_dialog.dart';
 import 'package:intl/intl.dart';
@@ -24,7 +26,10 @@ class ModalDateHome extends StatefulWidget {
 class _ModalDateHomeState extends State<ModalDateHome> {
   var monthController = TextEditingController();
   var yearController = TextEditingController();
-  var salaryController = TextEditingController();
+  var salaryController = MoneyMaskedTextController(
+    decimalSeparator: ',',
+    thousandSeparator: '.',
+  );
   DateTime dataInfo;
 
   monthFormat(dataInfo) {
@@ -39,6 +44,10 @@ class _ModalDateHomeState extends State<ModalDateHome> {
     String dataFormatada = DateFormat('yyyy', 'pt_BR').format(dataInfo);
 
     return dataFormatada;
+  }
+
+  filter(String s) {
+    return s.replaceAll('.', '').replaceAll(',', '.');
   }
 
   @override
@@ -122,7 +131,6 @@ class _ModalDateHomeState extends State<ModalDateHome> {
               ),
               child: TextFieldHome(
                 controller: salaryController,
-                prefixText: "R\$",
                 labelText: "Informe o seu salário desse mês.",
                 hintText: "",
                 id: 1,
@@ -140,25 +148,32 @@ class _ModalDateHomeState extends State<ModalDateHome> {
               child: RaisedButton(
                 color: Theme.of(context).primaryColor,
                 onPressed: () {
-                  if (widget.refresh) {
-                    widget.functionInsert(
-                      Date(
-                        id: widget.date.id,
-                        month: monthFormat(dataInfo),
-                        year: yearFormat(dataInfo),
-                        salary: salaryController.text,
-                      ),
-                    );
+                  // String month = monthFormat(dataInfo);
+                  // String year = yearFormat(dataInfo);
+                  // String filtrado = filter(salaryController.text);
+                  if (dataInfo == null || salaryController.text.isEmpty) {
+                    return;
                   } else {
-                    widget.functionInsert(
-                      Date(
-                        month: monthFormat(dataInfo),
-                        year: yearFormat(dataInfo),
-                        salary: salaryController.text,
-                      ),
-                    );
+                    if (widget.refresh) {
+                      widget.functionInsert(
+                        Date(
+                          id: widget.date.id,
+                          month: monthFormat(dataInfo),
+                          year: yearFormat(dataInfo),
+                          salary: filter(salaryController.text),
+                        ),
+                      );
+                    } else {
+                      widget.functionInsert(
+                        Date(
+                          month: monthFormat(dataInfo),
+                          year: yearFormat(dataInfo),
+                          salary: filter(salaryController.text),
+                        ),
+                      );
+                    }
+                    Navigator.of(context).pop();
                   }
-                  Navigator.of(context).pop();
                 },
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(50)),
